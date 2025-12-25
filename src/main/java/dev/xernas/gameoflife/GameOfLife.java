@@ -41,7 +41,6 @@ public class GameOfLife {
     private boolean paused;
     private float fps;
     private int simulationSpeed = AppConstants.DEFAULT_SIMULATION_SPEED;
-    private float zoom = 1f;
 
     public GameOfLife(Window window, Grid grid) {
         this.window = window;
@@ -162,13 +161,6 @@ public class GameOfLife {
         if (window.getInput().hasHold(Key.KEY_R)) {
             paused = true;
             grid.resetGrid();
-        }
-        // Zooming in and out with mouse scroll
-        if (window.getInput().getMouse().hasScrolled()) {
-            float scrollDelta = window.getInput().getMouse().getScroll();
-            zoom += scrollDelta * 0.1f;
-            zoom = Math.max(0.1f, zoom);
-            window.getInput().resetScrollDelta();
         }
     }
 
