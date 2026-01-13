@@ -36,6 +36,7 @@ public class GameOfLife {
     private IMesh cellMesh;
     private Vector2f cameraStartPos;
     private Vector2f cameraDeltaDir;
+    private float zoomLevel;
 
     private boolean running;
     private boolean paused;
@@ -50,6 +51,7 @@ public class GameOfLife {
         this.camera = new Transform.CameraTransform();
         this.cameraStartPos = new Vector2f();
         this.cameraDeltaDir = new Vector2f();
+        this.zoomLevel = grid.getCellSize();
         this.generationCount = 0;
     }
 
@@ -74,7 +76,9 @@ public class GameOfLife {
             // Camera movement
             camera.move(new Vector3f(-cameraDeltaDir.x, -cameraDeltaDir.y, 0));
             cameraDeltaDir.set(0);
-
+            
+            window.getInput().resetScrollDelta();
+            
             // Rendering
             renderer.clear();
             List<Grid.Cell> cells = grid.getAliveCells();
@@ -131,6 +135,16 @@ public class GameOfLife {
         } else {
             window.setCursorShape(CursorShape.ARROW);
             cameraStartPos = null;
+        }
+        // Managing zoom with mouse scroll
+        if (window.getInput().getMouse().hasScrolled()) {
+            float scrollAmount = window.getInput().getMouse().getScroll();
+            zoomLevel += scrollAmount * 0.001f;
+            if (zoomLevel < 0.001f) zoomLevel = 0.001f;
+            grid.setCellSize(zoomLevel);
+            
+            Vector2f currentMousePos = window.getInput().getMouse().toWorldSpace(window);
+            cameraDeltaDir = new Vector2f(currentMousePos.mul(zoomLevel).mul(-1));
         }
         // Managing cell birth with left mouse button
         if (window.getInput().isPressing(Key.MOUSE_LEFT)) {
