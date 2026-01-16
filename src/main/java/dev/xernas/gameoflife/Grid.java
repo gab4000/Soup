@@ -7,8 +7,8 @@ public class Grid {
 
     private final Cell[][] grid;
     private final List<Cell> allCells = new ArrayList<>();
-    private final float cellSize;
     public static float cellSpacing;
+    private float cellSize;
 
     public Grid(int width, int height, float cellSize) {
         cellSpacing = 0f; // Default value
@@ -81,6 +81,10 @@ public class Grid {
 
     public float getCellSize() {
         return cellSize;
+    }
+    
+    public void setCellSize(float cellSize) {
+        this.cellSize = cellSize;
     }
 
     public List<Cell> getAliveCells() {
