@@ -41,6 +41,7 @@ public class GameOfLife {
     private boolean paused;
     private float fps;
     private int simulationSpeed = AppConstants.DEFAULT_SIMULATION_SPEED;
+    private int generationCount;
 
     public GameOfLife(Window window, Grid grid) {
         this.window = window;
@@ -49,6 +50,7 @@ public class GameOfLife {
         this.camera = new Transform.CameraTransform();
         this.cameraStartPos = new Vector2f();
         this.cameraDeltaDir = new Vector2f();
+        this.generationCount = 0;
     }
 
     public void run() throws PhotonException {
@@ -64,7 +66,7 @@ public class GameOfLife {
             // Window
             window.update(renderer);
             if (!window.isOpen()) running = false;
-            window.setTitle(window.getDefaultTitle() + " | FPS: " + Math.round(fps) + " | Simulation speed: " + simulationSpeed + (paused ? " | (Paused)" : ""));
+            window.setTitle(window.getDefaultTitle() + " | FPS: " + Math.round(fps) + " | Simulation speed: " + simulationSpeed + "| Generation: " + generationCount + (paused ? " | (Paused)" : ""));
 
             // Input
             input();
@@ -91,7 +93,10 @@ public class GameOfLife {
 
             // Timers
             if (accumulator >= (float) 1 / simulationSpeed) {
-                if (!paused) grid.updateCells();
+                if (!paused) {
+                    grid.updateCells();
+                    generationCount++;
+                }
                 accumulator = 0f;
             }
             if (fpsTimer >= 1f) {
@@ -163,6 +168,10 @@ public class GameOfLife {
         }
         if (window.getInput().hasPressed(Key.KEY_ARROW_LEFT) || window.getInput().hasHold(Key.KEY_ARROW_LEFT)) {
             Grid.cellSpacing = Math.max(0f, Grid.cellSpacing - 0.001f);
+        // Single step update
+        if (window.getInput().hasPressed(Key.KEY_S) || window.getInput().hasHold(Key.KEY_S)) {
+            paused = true;
+            grid.updateCells();
         }
         // Resetting simulation
         if (window.getInput().hasHold(Key.KEY_R)) {
@@ -182,6 +191,7 @@ public class GameOfLife {
 
         window.show();
         running = true;
+        paused = true;
     }
 
     private void clean() throws PhotonException {
