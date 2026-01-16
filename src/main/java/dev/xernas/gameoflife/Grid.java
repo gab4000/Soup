@@ -7,9 +7,11 @@ public class Grid {
 
     private final Cell[][] grid;
     private final List<Cell> allCells = new ArrayList<>();
+    public static float cellSpacing;
     private float cellSize;
 
     public Grid(int width, int height, float cellSize) {
+        cellSpacing = 0f; // Default value
         grid = new Cell[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -92,11 +94,11 @@ public class Grid {
     }
 
     public float getWorldWidth() {
-        return grid.length * (cellSize + AppConstants.CELL_SPACING);
+        return grid.length * (cellSize + cellSpacing);
     }
 
     public float getWorldHeight() {
-        return grid[0].length * (cellSize + AppConstants.CELL_SPACING);
+        return grid[0].length * (cellSize + cellSpacing);
     }
 
     public static class Cell {
